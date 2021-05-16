@@ -1,0 +1,4 @@
+﻿  main.cpp
+D:\Windows Kits\10\Include\10.0.17763.0\shared\minwindef.h(130): warning C4005: “APIENTRY”: 宏重定义
+  C:\Users\YC\Desktop\Viewer\include\glad/glad.h(32): note: 参见“APIENTRY”的前一个定义
+  Viewer.vcxproj -> C:\Users\YC\Desktop\Viewer\build\Debug\Viewer.exe
