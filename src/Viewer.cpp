@@ -48,21 +48,19 @@ GLShader::operator const GLuint() const {
 GLProgram::GLProgram() :
     handle(glCreateProgram()) {
 }
+void GLProgram::postLink(){
+}
 
 void GLProgram::link(const GLShader &vshader, const GLShader &fshader) {
     GLint linked = 0;
     glAttachShader(handle, vshader);
     glAttachShader(handle, fshader);
     glLinkProgram(handle);
-    //glDetachShader(handle, vshader);
-    //glDetachShader(handle, fshader);
     glGetProgramiv(handle, GL_LINK_STATUS, &linked);
     if (!linked) {
         throw std::runtime_error("Fail to link shader.");
     }
-    // uModelViewMatrix  = glGetUniformLocation(handle, "uModelViewMatrix");
-    // uProjectionMatrix = glGetUniformLocation(handle, "uProjectionMatrix");
-    // postLink();
+    postLink();
 }
 
 GLProgram::operator const GLuint() const {

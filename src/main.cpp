@@ -1,7 +1,9 @@
 
-#include <Viewer.h>
+#include <extensionViewer.h>
 #include <iostream>
 #include <GLFW/glfw3.h>
+#include <fstream>
+#include <string>
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
 
@@ -23,19 +25,6 @@ unsigned int indices[] = {
 // settings
 const unsigned int SCR_WIDTH  = 800;
 const unsigned int SCR_HEIGHT = 600;
-
-const char *vertexShaderSource = "#version 330 core\n"
-                                 "layout (location = 0) in vec3 aPos;\n"
-                                 "void main()\n"
-                                 "{\n"
-                                 "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-                                 "}\0";
-const char *fragmentShaderSource = "#version 330 core\n"
-                                   "out vec4 FragColor;\n"
-                                   "void main()\n"
-                                   "{\n"
-                                   "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-                                   "}\n\0";
 
 GLFWwindow *initWindow() {
     // glfw: initialize and configure
@@ -69,27 +58,52 @@ GLFWwindow *initWindow() {
     return window;
 }
 
+void makeProgram(GLProgram &glprogram, const std::string &vs_path, const std::string &fs_path) {
+    std::ifstream vshaderSource(vs_path);
+    if(!vshaderSource.good())  
+    {  
+        std::cout  << "ERROR: loading (" << vs_path << ") file is not good" << "\n";  
+        throw; 
+    }  
+
+
+    std::ifstream fshaderSource(fs_path);
+    if(!fshaderSource.good())  
+    {  
+        std::cout  << "ERROR: loading (" << vs_path << ") file is not good" << "\n";  
+        throw; 
+    }  
+
+    // vertex shader
+    GLShader basic_vert(GL_VERTEX_SHADER);
+    basic_vert.compile(vshaderSource);
+    // fragment shader
+    GLShader basic_frag(GL_FRAGMENT_SHADER);
+    basic_frag.compile(fshaderSource);
+    // link shaders
+    glprogram.link(basic_vert, basic_frag);
+}
+
 int main() {
     GLFWwindow *window = initWindow();
     // build and compile our shader program
     // ------------------------------------
+    // GLProgram easyProgram;
+    learnOpenGLProgram easyProgram;
+    makeProgram(
+        easyProgram,
+        "D:/Viewer/shader/vertexShader.vs",
+        "D:/Viewer/shader/fragShader.fs");
 
-    // vertex shader
-    GLShader basic_vert(GL_VERTEX_SHADER);
-    basic_vert.compile(vertexShaderSource);
-    // fragment shader
-    GLShader basic_frag(GL_FRAGMENT_SHADER);
-    basic_frag.compile(fragmentShaderSource);
-    // link shaders
-    GLProgram easyProgram;
-    easyProgram.link(basic_vert, basic_frag);
+    easyProgram.setOurColor({0.6314, 0.0706, 0.0706, 0.877});
+
 
     GLProgramData GLData;
     GLData.setPositionData(vertices, sizeof(vertices) / 3);
     GLData.setIndexData(indices, 6);
 
     // uncomment this call to draw in wireframe polygons.
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window)) {
@@ -112,7 +126,6 @@ int main() {
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
     glfwTerminate();
