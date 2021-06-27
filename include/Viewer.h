@@ -2,6 +2,7 @@
 #include <fstream>
 #include <glad/glad.h>
 #include <common.h>
+#include <iostream>
 
 class NonCopyable {
 private:
@@ -30,6 +31,7 @@ class GLProgram : public NonCopyable {
 protected:
     GLuint handle;
     virtual void postLink();
+
 public:
     GLProgram();
     virtual void link(const GLShader &vshader, const GLShader &fshader);
@@ -50,4 +52,37 @@ public:
 
     operator GLuint() const;
     ~GLProgramData();
+};
+
+class GLBackground : public NonCopyable {
+private:
+    class GLBackgroundData {
+    public:
+        GLBackgroundData();
+
+        void uploadData(Float *data, size_t size);
+
+        void uploadIndice(unsigned int *data, size_t size);
+
+        operator const GLuint() const;
+
+    private:
+        GLuint handle;
+        GLuint vbo[2];
+    };
+
+private:
+    GLProgram g_program;
+    GLBackgroundData g_data;
+
+    void make_program(const std::string &vs, const std::string &fs);
+
+private:
+    Eigen::Matrix<Float, 6, 4, Eigen::ColMajor> m_data;          // four points
+    Eigen::Matrix<unsigned int, 3, 2, Eigen::ColMajor> m_indice; // two triangles make a quad;
+
+public:
+    GLBackground() = delete;
+    GLBackground(const std::string &vs, const std::string &fs);
+    void draw();
 };

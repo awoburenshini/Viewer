@@ -109,7 +109,7 @@ void GLProgramData::setPositionData(Float *buff, unsigned int len) {
 }
 
 void GLProgramData::setIndexData(unsigned int *buff, unsigned int len) {
-    glBindVertexArray(handle);
+    // glBindVertexArray(handle);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[1]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(signed int) * len, buff, GL_STATIC_DRAW);
 }
@@ -119,3 +119,84 @@ GLProgramData::operator GLuint() const {
 }
 
 
+GLBackground::GLBackgroundData::GLBackgroundData() {
+    glGenVertexArrays(1, &handle);
+    glGenBuffers(2, vbo);
+    {
+        glBindVertexArray(handle);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+        // interpret vbo as positions and colors pointer
+#if defined(SINGLE_PRECISION)
+
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), 0);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(3 * sizeof(float)));
+#else
+        glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, 6 * sizeof(double), 0);
+        glVertexAttribPointer(1, 3, GL_DOUBLE, GL_FALSE, 6 * sizeof(double), (void *)(3 * sizeof(double)));
+#endif
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        // render indice
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[1]);
+        glBindVertexArray(0);
+    }
+}
+
+void GLBackground::GLBackgroundData::uploadData(Float *data, size_t size) {
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Float) * size, data, GL_STATIC_DRAW);
+}
+
+void GLBackground::GLBackgroundData::uploadIndice(unsigned int *data, size_t size) {
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * size, data, GL_STATIC_DRAW);
+}
+
+GLBackground::GLBackgroundData::operator const GLuint() const {
+    return handle;
+}
+
+void GLBackground::make_program(const std::string &vs, const std::string &fs) {
+    std::ifstream vshaderSource(vs);
+    if (!vshaderSource.good()) {
+        std::cout << "ERROR: loading (" << vs << ") file is not good"
+                  << "\n";
+        throw;
+    }
+
+    std::ifstream fshaderSource(fs);
+    if (!fshaderSource.good()) {
+        std::cout << "ERROR: loading (" << vs << ") file is not good"
+                  << "\n";
+        throw;
+    }
+    GLShader basic_vert(GL_VERTEX_SHADER);
+    basic_vert.compile(vshaderSource);
+    // fragment shader
+    GLShader basic_frag(GL_FRAGMENT_SHADER);
+    basic_frag.compile(fshaderSource);
+    // link shaders
+    g_program.link(basic_vert, basic_frag);
+}
+
+GLBackground::GLBackground(const std::string &vs, const std::string &fs) {
+    make_program(vs, fs);
+    //position,     color
+    m_data.col(0) << 1.f, 1.f, 0.0f, 0.7294, 0.8588, 0.9686;
+    m_data.col(1) << 1.f, -1.f, 0.0f, 0.5922, 0.6275, 0.6314;
+    m_data.col(2) << -1.f, -1.f, 0.0f, 0.5922, 0.6275, 0.6314;
+    m_data.col(3) << -1.f, 1.f, 0.0f, 0.7294, 0.8588, 0.9686;
+    m_indice.col(0) << 0, 1, 3;
+    m_indice.col(1) << 1, 2, 3;
+
+    g_data.uploadData(m_data.data(), m_data.size());
+    g_data.uploadIndice(m_indice.data(), m_indice.size());
+}
+
+void GLBackground::draw() {
+    glUseProgram(g_program);
+    glBindVertexArray(g_data);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
+}

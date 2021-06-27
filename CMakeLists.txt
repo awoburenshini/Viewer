@@ -13,8 +13,18 @@ include_directories("${CMAKE_SOURCE_DIR}/include")
 include_directories("${CMAKE_SOURCE_DIR}/extern/eigen3")
 link_directories("${CMAKE_SOURCE_DIR}/lib/x64")
 
-set(INC include/common.h include/Viewer.h include/extensionViewer.h)
-set(SRCS src/glad.c src/main.cpp src/Viewer.cpp)
+set(INC 
+    include/common.h 
+    include/Viewer.h 
+    include/extensionViewer.h
+    include/MeshIO.h
+    )
+set(SRCS 
+    src/glad.c 
+    src/main.cpp 
+    src/Viewer.cpp
+    src/MeshIO.cpp
+    )
 add_executable(Viewer ${INC} ${SRCS})
 
 target_link_libraries(Viewer glfw3dll glew32 opengl32)
