@@ -85,7 +85,6 @@ void makeProgram(GLProgram &glprogram, const std::string &vs_path, const std::st
 }
 
 int main() {
-    Eigen::Affine3d aff;
 
     GLFWwindow *window = initWindow();
     GLBackground background(
@@ -101,7 +100,7 @@ int main() {
     Vector3f up(0.f, 0.f, 1.f);
 
     cam.setLookAt(origin, target, up);
-    cam.setProjective(-0.1, 0.1, -0.1, 0.1, 0.1, 100);
+    cam.setProjective(-0.01, 0.01, -0.01, 0.01, 0.01, 100);
     // cam.setOrtho(-0.1f, 0.1f, -0.1f, 0.1f, 0.1f, 100.0f);
     makeProgram(
         easyProgram,
@@ -138,6 +137,7 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
         background.draw();
         
+        // use easyProgram draw GLData
         {
             glUseProgram(easyProgram);
             glBindVertexArray(GLData); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
