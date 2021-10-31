@@ -32,7 +32,7 @@ inline uint32_t str_to_uint32_t(const std::string &str) {
 	return result;
 }
 
-void load_obj(const std::string& filename, MatrixXf& V, MatrixXu& F)
+void load_obj(const std::string& filename, MatrixXr& V, MatrixXu& F)
 {
 	/// Vertex indices used by the OBJ format
 	struct obj_vertex {
@@ -78,7 +78,7 @@ void load_obj(const std::string& filename, MatrixXf& V, MatrixXu& F)
 
 	std::ifstream is(filename);
 
-	std::vector<Vector3f>   positions;
+	std::vector<Vector3r>   positions;
 	//std::vector<Vector2d>   texcoords;
 	//std::vector<Vector3d>   normals;
 	std::vector<uint32_t>   indices;
@@ -93,7 +93,7 @@ void load_obj(const std::string& filename, MatrixXf& V, MatrixXu& F)
 		line >> prefix;
 
 		if (prefix == "v") {
-			Vector3f p;
+			Vector3r p;
 			line >> p.x() >> p.y() >> p.z();
 			positions.push_back(p);
 		}
@@ -153,9 +153,9 @@ void load_obj(const std::string& filename, MatrixXf& V, MatrixXu& F)
 }
 
 
-void write_obj(const std::string &filename, const MatrixXf &V, const MatrixXu &F,
-                const MatrixXf &N, const MatrixXf &Nf,
-               const MatrixXf &UV, const MatrixXf &C) {
+void write_obj(const std::string &filename, const MatrixXr &V, const MatrixXu &F,
+                const MatrixXr &N, const MatrixXr &Nf,
+               const MatrixXr &UV, const MatrixXr &C) {
     cout << "Writing \"" << filename << "\" (V=" << V.cols()
          << ", F=" << F.cols() << ") .. ";
     cout.flush();

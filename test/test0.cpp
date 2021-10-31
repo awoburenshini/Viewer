@@ -1,31 +1,18 @@
-
-#include <extensionViewer.h>
+#include <MeshIO.h>
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <extensionViewer.h>
 
 #include <GLFW/glfw3.h>
+
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
-
-// set up vertex data (and buffer(s)) and configure vertex attributes
-// ------------------------------------------------------------------
-Float vertices[] = {
-    .5f, .5f, 0.0f,   // top right
-    .5f, -.5f, 0.0f,  // bottom right
-    -.5f, -.5f, 0.0f, // bottom left
-    -.5f, .5f, 0.0f   // top left
-};
-
-unsigned int indices[] = {
-    // note that we start from 0!
-    3, 1, 0, // first Triangle
-    1, 2, 3  // second Triangle
-};
+void mouse_callback(GLFWwindow *window, double xpos, double ypos);
 
 // settings
 const unsigned int SCR_WIDTH  = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_HEIGHT = 800;
 
 GLFWwindow *initWindow() {
     // glfw: initialize and configure
@@ -34,6 +21,7 @@ GLFWwindow *initWindow() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_RESIZABLE,0);
 
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -49,7 +37,9 @@ GLFWwindow *initWindow() {
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);
 
+    // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR);
     // glad: load all OpenGL function pointers
     // ---------------------------------------
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -85,90 +75,88 @@ void makeProgram(GLProgram &glprogram, const std::string &vs_path, const std::st
 }
 
 int main() {
-
     GLFWwindow *window = initWindow();
     GLBackground background(
-        "D:/Viewer/shader/background.vs",
-        "D:/Viewer/shader/background.fs");
-    // build and compile our shader program
-    // ------------------------------------
-    // GLProgram easyProgram;
-    learnOpenGLProgram easyProgram;
+        "../shader/background.vs",
+        "../shader/background.fs");
+
     Camera cam;
-    Vector3f origin(1.f, 1.f, 1.f);
-    Vector3f target(0.f, 0.f, 0.f);
-    Vector3f up(0.f, 0.f, 1.f);
+    Vector3r origin(4.f, 6.f, 4.f);
+    Vector3r target(0.f, 0.f, 0.f);
+    Vector3r up(0.f, 0.f, 1.f);
 
     cam.setLookAt(origin, target, up);
     cam.setProjective(-0.01, 0.01, -0.01, 0.01, 0.01, 100);
-    // cam.setOrtho(-0.1f, 0.1f, -0.1f, 0.1f, 0.1f, 100.0f);
+
+    MatrixXr V;
+    MatrixXu F;
+    load_obj("../model/cube.obj", V, F);
+
+    GLModelData GLData;
+    GLData.setPositionData(V.data(), V.size());
+    GLData.setIndexData(F.data(), F.size());
+
+    learnOpenGLProgram easyProgram;
     makeProgram(
         easyProgram,
-        "D:/Viewer/shader/learnOpenGL.vs",
-        "D:/Viewer/shader/learnOpenGL.fs");
-
-    easyProgram.setOurColor({0.6314, 0.0706, 0.0706, 0.877});
-
-    std::cout << "projective: \n"
-              << cam.getProjectiveMatrix() << std::endl;
-    std::cout << cam.getProjectiveMatrix() << std::endl;
+        "../shader/learnOpenGL.vs",
+        "../shader/learnOpenGL.fs");
     easyProgram.setProjective(cam.getProjectiveMatrix());
-
-    std::cout << "view: \n"
-              << cam.getViewMatrix() << std::endl;
     easyProgram.setView(cam.getViewMatrix());
-
-    GLProgramData GLData;
-    GLData.setPositionData(vertices, sizeof(vertices) / 3);
-    GLData.setIndexData(indices, 6);
-
-    // uncomment this call to draw in wireframe polygons.
-
-    // render loop
-    // -----------
+    
     while (!glfwWindowShouldClose(window)) {
-        // input
-        // -----
         processInput(window);
-
-        // render
-        // ------
-        // glClearColor(0.f, 0.f, 0.f, 0.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+        glDisable(GL_DEPTH_TEST);
         background.draw();
-        
-        // use easyProgram draw GLData
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
         {
+            easyProgram.setOurColor({0.6314, 0.0706, 0.0706, 0.877});
             glUseProgram(easyProgram);
-            glBindVertexArray(GLData); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-            glBindVertexArray(0); // no need to unbind it every time
+            glBindVertexArray(GLData);
+            // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            glDrawElements(GL_TRIANGLES, F.size(), GL_UNSIGNED_INT, NULL);
+            // glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            glBindVertexArray(0);
             glUseProgram(0);
+        }
+        {
+            easyProgram.setOurColor({0., 0., 0., 1.});
+            glUseProgram(easyProgram);
+            glBindVertexArray(GLData);
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            glDrawElements(GL_TRIANGLES, F.size(), GL_UNSIGNED_INT, NULL);
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        } // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-        // -------------------------------------------------------------------------------
+            glBindVertexArray(0);
+            glUseProgram(0);
+        }
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-    // glfw: terminate, clearing all previously allocated GLFW resources.
-    // ------------------------------------------------------------------
+
     glfwTerminate();
+
     return 0;
 }
 
-// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
-// ---------------------------------------------------------------------------------------------------------
 void processInput(GLFWwindow *window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
     }
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+        std::cout << "hello" << std::endl;
+    }
 }
 
-// glfw: whenever the window size changed (by OS or user resize) this callback function executes
-// ---------------------------------------------------------------------------------------------
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
     // make sure the viewport matches the new window dimensions; note that width and
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
+}
+
+void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+        std::cout << "hello"<< xpos<< " "<< ypos << std::endl;
+    }
 }

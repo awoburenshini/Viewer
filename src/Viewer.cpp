@@ -71,9 +71,26 @@ GLProgram::~GLProgram() {
     glDeleteProgram(handle);
 }
 
-GLProgramData::GLProgramData() {
-    // generate vertex array(VAO) pointer
+
+GLData::GLData(){
     glGenVertexArrays(1, &handle);
+}
+
+GLData::~GLData(){
+    glDeleteVertexArrays(1, &handle);
+}
+
+void GLData::bufferData(GLuint vbo, void *buff, size_t size) {
+    //glBindVertexArray(handle);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, size, buff, GL_STATIC_DRAW);
+}
+
+GLData::operator GLuint() const {
+    return handle;
+}
+
+GLModelData::GLModelData():GLData() {
     // generate buffer(VBO) pointer
     glGenBuffers(2, &vbo[0]);
     {
@@ -93,31 +110,19 @@ GLProgramData::GLProgramData() {
 
 }
 
-GLProgramData::~GLProgramData() {
-    glDeleteBuffers(4, vbo);
-    glDeleteVertexArrays(1, &handle);
+GLModelData::~GLModelData() {
+    glDeleteBuffers(2, vbo);
 }
 
-void GLProgramData::bufferData(unsigned int index, void *buff, size_t size) {
-    //glBindVertexArray(handle);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[index]);
-    glBufferData(GL_ARRAY_BUFFER, size, buff, GL_STATIC_DRAW);
+void GLModelData::setPositionData(Real *buff, unsigned int len) {
+    bufferData(vbo[0], buff, sizeof(Real) * len);
 }
 
-void GLProgramData::setPositionData(Float *buff, unsigned int len) {
-    bufferData(0, buff, sizeof(Float) * len);
-}
-
-void GLProgramData::setIndexData(unsigned int *buff, unsigned int len) {
+void GLModelData::setIndexData(unsigned int *buff, unsigned int len) {
     // glBindVertexArray(handle);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[1]);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(signed int) * len, buff, GL_STATIC_DRAW);
 }
-
-GLProgramData::operator GLuint() const {
-    return handle;
-}
-
 
 GLBackground::GLBackgroundData::GLBackgroundData() {
     glGenVertexArrays(1, &handle);
@@ -143,9 +148,9 @@ GLBackground::GLBackgroundData::GLBackgroundData() {
     }
 }
 
-void GLBackground::GLBackgroundData::uploadData(Float *data, size_t size) {
+void GLBackground::GLBackgroundData::uploadData(Real *data, size_t size) {
     glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Float) * size, data, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Real) * size, data, GL_STATIC_DRAW);
 }
 
 void GLBackground::GLBackgroundData::uploadIndice(unsigned int *data, size_t size) {

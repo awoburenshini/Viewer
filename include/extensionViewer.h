@@ -3,16 +3,16 @@
 #include <Viewer.h>
 class Camera {
 private:
-    Vector3f m_center; // camera position (world coordinates)
-    Vector3f m_front;  // camera front
-    Vector3f m_up;     // camera up
-    Vector3f m_right;  // camera right
+    Vector3r m_center; // camera position (world coordinates)
+    Vector3r m_front;  // camera front
+    Vector3r m_up;     // camera up
+    Vector3r m_right;  // camera right
 private:
-    Matrix4f m_view;
-    Matrix4f m_projective;
+    Matrix4r m_view;
+    Matrix4r m_projective;
 
 public:
-    void setProjective(Float left, Float right, Float bottom, Float top, Float nearVal, Float farVal) {
+    void setProjective(Real left, Real right, Real bottom, Real top, Real nearVal, Real farVal) {
         m_projective.setZero();
         m_projective(0, 0) = (2.0f * nearVal) / (right - left);
         m_projective(1, 1) = (2.0f * nearVal) / (top - bottom);
@@ -23,17 +23,17 @@ public:
         m_projective(2, 3) = -(2.0f * farVal * nearVal) / (farVal - nearVal);
     };
 
-    void setLookAt(const Vector3f &origin, const Vector3f &target, const Vector3f &up) {
-        Eigen::Vector3f f = (target - origin).normalized();
-        Eigen::Vector3f s = f.cross(up).normalized();
-        Eigen::Vector3f u = s.cross(f);
+    void setLookAt(const Vector3r &origin, const Vector3r &target, const Vector3r &up) {
+        Vector3r f = (target - origin).normalized();
+        Vector3r s = f.cross(up).normalized();
+        Vector3r u = s.cross(f);
 
         m_front  = -f;
         m_center = origin;
         m_right  = s;
         m_up     = u;
 
-        m_view       = Matrix4f::Identity();
+        m_view       = Matrix4r::Identity();
         m_view(0, 0) = s(0);
         m_view(0, 1) = s(1);
         m_view(0, 2) = s(2);
@@ -48,8 +48,8 @@ public:
         m_view(2, 3) = f.transpose() * origin;
     };
 
-    void setOrtho(Float left, Float right, Float bottom,
-                  Float top, Float nearVal, Float farVal) {
+    void setOrtho(Real left, Real right, Real bottom,
+                  Real top, Real nearVal, Real farVal) {
         m_projective.setZero();
         m_projective(0, 0) = 2.0f / (right - left);
         m_projective(1, 1) = 2.0f / (top - bottom);
@@ -58,10 +58,10 @@ public:
         m_projective(1, 3) = -(top + bottom) / (top - bottom);
         m_projective(2, 3) = -(farVal + nearVal) / (farVal - nearVal);
     }
-    const Matrix4f &getViewMatrix() const {
+    const Matrix4r &getViewMatrix() const {
         return m_view;
     }
-    const Matrix4f &getProjectiveMatrix() const {
+    const Matrix4r &getProjectiveMatrix() const {
         return m_projective;
     }
 };
@@ -83,21 +83,33 @@ public:
         GLProgram() {
     }
 
-    void setOurColor(const Vector4f &color) {
+    void setOurColor(const Vector4r &color) {
         glUseProgram(*this);
+#ifdef SINGLE_PRECISION
         glUniform4f(uOurColor, color(0), color(1), color(2), color(3));
+#else
+        glUniform4d(uOurColor, color(0), color(1), color(2), color(3));
+#endif
         glUseProgram(0);
     }
 
-    void setView(const Matrix4f &view) {
+    void setView(const Matrix4r &view) {
         glUseProgram(*this);
+#ifdef SINGLE_PRECISION
         glUniformMatrix4fv(uView, 1, GL_FALSE, view.data());
+#else
+        glUniformMatrix4dv(uView, 1, GL_FALSE, view.data());
+#endif
         glUseProgram(0);
     }
 
-    void setProjective(const Matrix4f &proj) {
+    void setProjective(const Matrix4r &proj) {
         glUseProgram(*this);
+#ifdef SINGLE_PRECISION
         glUniformMatrix4fv(uProj, 1, GL_FALSE, proj.data());
+#else
+        glUniformMatrix4dv(uProj, 1, GL_FALSE, proj.data());
+#endif
         glUseProgram(0);
     }
 };

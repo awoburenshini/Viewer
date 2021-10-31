@@ -39,19 +39,29 @@ public:
     ~GLProgram();
 };
 
-class GLProgramData : public NonCopyable {
+class GLData : public NonCopyable {
 protected:
     GLuint handle; // VAO
-    GLuint vbo[2]; // vertex buffer object handles : position index
-    void bufferData(unsigned int index, void *buff, size_t size);
-
+    GLData();
+    ~GLData();
+    void bufferData(GLuint vbo, void *buff, size_t size);
 public:
-    GLProgramData(); // will create a intact Vertex Array pointer
-    void setPositionData(Float *buff, unsigned int len);
-    void setIndexData(unsigned int *buff, unsigned int len);
 
     operator GLuint() const;
-    ~GLProgramData();
+};
+
+class GLModelData : public GLData {
+protected:
+    GLuint vbo[2]; // vertex buffer object handles : position index
+public:
+    GLModelData(); // will create a intact Vertex Array pointer
+    void setPositionData(Real *buff, unsigned int len);
+    void setIndexData(unsigned int *buff, unsigned int len);
+    const GLuint &getVertexVBO() {
+        return vbo[0];
+    }
+
+    ~GLModelData();
 };
 
 class GLBackground : public NonCopyable {
@@ -60,7 +70,7 @@ private:
     public:
         GLBackgroundData();
 
-        void uploadData(Float *data, size_t size);
+        void uploadData(Real *data, size_t size);
 
         void uploadIndice(unsigned int *data, size_t size);
 
@@ -78,7 +88,7 @@ private:
     void make_program(const std::string &vs, const std::string &fs);
 
 private:
-    Eigen::Matrix<Float, 6, 4, Eigen::ColMajor> m_data;          // four points
+    Eigen::Matrix<Real, 6, 4, Eigen::ColMajor> m_data;           // four points
     Eigen::Matrix<unsigned int, 3, 2, Eigen::ColMajor> m_indice; // two triangles make a quad;
 
 public:

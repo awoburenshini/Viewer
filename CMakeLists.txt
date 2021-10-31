@@ -21,9 +21,10 @@ set(INC
     )
 set(SRCS 
     src/glad.c 
-    src/main.cpp 
     src/Viewer.cpp
     src/MeshIO.cpp
+    test/test0.cpp 
+    # test/main.cpp
     )
 add_executable(Viewer ${INC} ${SRCS})
 
