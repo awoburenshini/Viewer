@@ -9,7 +9,7 @@
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
 void mouse_callback(GLFWwindow *window, double xpos, double ypos);
-
+void mouse_button_callback(GLFWwindow *window, int button, int action, int mods);
 // settings
 const unsigned int SCR_WIDTH  = 800;
 const unsigned int SCR_HEIGHT = 800;
@@ -21,7 +21,7 @@ GLFWwindow *initWindow() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_RESIZABLE,0);
+    glfwWindowHint(GLFW_RESIZABLE, 0);
 
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -38,6 +38,7 @@ GLFWwindow *initWindow() {
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
 
     // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR);
     // glad: load all OpenGL function pointers
@@ -103,7 +104,7 @@ int main() {
         "../shader/learnOpenGL.fs");
     easyProgram.setProjective(cam.getProjectiveMatrix());
     easyProgram.setView(cam.getViewMatrix());
-    
+
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -155,8 +156,33 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
     glViewport(0, 0, width, height);
 }
 
+inline void coordTransformToNDC(GLFWwindow *window, double &x, double &y) {
+    int width  = 0;
+    int height = 0;
+    glfwGetWindowSize(window, &width, &height);
+    x = 2 * x - width;
+    y = 2 * y - height;
+    x = x / (double)width;
+    y = -y / (double)height;
+}
+
+void mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
+    if (button == GLFW_MOUSE_BUTTON_LEFT) {
+        if (action == GLFW_PRESS) {
+            double xpos = 0.;
+            double ypos = 0.;
+            glfwGetCursorPos(window, &xpos, &ypos);
+            coordTransformToNDC(window, xpos, ypos);
+            std::cout << "press left " << xpos << " " << ypos << std::endl;
+        } else {
+            std::cout << "release left" << std::endl;
+        }
+    }
+}
+
 void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-        std::cout << "hello"<< xpos<< " "<< ypos << std::endl;
+        coordTransformToNDC(window, xpos, ypos);
+        std::cout << "hello" << xpos << " " << ypos << std::endl;
     }
 }

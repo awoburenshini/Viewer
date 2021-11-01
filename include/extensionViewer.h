@@ -2,12 +2,12 @@
 
 #include <Viewer.h>
 class Camera {
-private:
+protected:
     Vector3r m_center; // camera position (world coordinates)
     Vector3r m_front;  // camera front
     Vector3r m_up;     // camera up
     Vector3r m_right;  // camera right
-private:
+protected:
     Matrix4r m_view;
     Matrix4r m_projective;
 
@@ -66,6 +66,17 @@ public:
     }
 };
 
+class ArcballCamera : public Camera {
+private:
+    Vector2r mLastPosition;
+public:
+    // input NDC coordinates
+    void setLastPosition(const Vector2r& lastPosition){
+        mLastPosition = lastPosition;
+    };
+    void parallelMove(const Vector2r &currentPosition);
+    void rotate(const Vector2r &currentPosition);
+};
 class learnOpenGLProgram : public GLProgram {
 private:
     GLuint uOurColor;
