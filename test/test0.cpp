@@ -178,6 +178,14 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
             std::cout << "release left" << std::endl;
         }
     }
+
+    if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
+        if (action == GLFW_PRESS) {
+            std::cout << "press middle " << std::endl;
+        } else {
+            std::cout << "release middle " << std::endl;
+        }
+    }
 }
 
 void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
