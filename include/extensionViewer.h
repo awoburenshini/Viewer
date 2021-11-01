@@ -74,7 +74,11 @@ public:
     void setLastPosition(const Vector2r& lastPosition){
         mLastPosition = lastPosition;
     };
+
+    // input NDC coordinates
     void parallelMove(const Vector2r &currentPosition);
+    
+    // input NDC coordinates
     void rotate(const Vector2r &currentPosition);
 };
 class learnOpenGLProgram : public GLProgram {
