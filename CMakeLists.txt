@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.15)
 
 set(CMAKE_GENERATOR_PLATFORM x64)
-set(CMAKE_GENERATOR "Visual Studio 15 2017")
-message("generator is set to ${CMAKE_GENERATOR}")
+# set(CMAKE_GENERATOR "Visual Studio 15 2017")
+# message("generator is set to ${CMAKE_GENERATOR}")
 project(Viewer)
 
 # set our system with float

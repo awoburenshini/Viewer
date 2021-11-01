@@ -30,10 +30,10 @@ void GLShader::compile(std::ifstream &source) {
     std::vector<char> text;
     source.seekg(0, std::ios_base::end);
     std::streampos fileSize = source.tellg();
-	if (fileSize == -1) {
+    if (fileSize == -1) {
         std::cerr << "reading fault, fileSize is -1" << std::endl;
         throw;
-	}
+    }
     text.resize((size_t)fileSize);
 
     source.seekg(0, std::ios_base::beg);
@@ -48,7 +48,7 @@ GLShader::operator const GLuint() const {
 GLProgram::GLProgram() :
     handle(glCreateProgram()) {
 }
-void GLProgram::postLink(){
+void GLProgram::postLink() {
 }
 
 void GLProgram::link(const GLShader &vshader, const GLShader &fshader) {
@@ -90,7 +90,6 @@ GLProgramData::GLProgramData() {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vbo[1]);
         glBindVertexArray(0);
     }
-
 }
 
 GLProgramData::~GLProgramData() {
@@ -117,7 +116,6 @@ void GLProgramData::setIndexData(unsigned int *buff, unsigned int len) {
 GLProgramData::operator GLuint() const {
     return handle;
 }
-
 
 GLBackground::GLBackgroundData::GLBackgroundData() {
     glGenVertexArrays(1, &handle);
