@@ -4,6 +4,7 @@
     "version": "2.0.0",
     "tasks": [
         {
+<<<<<<< HEAD
             "label": "echo",
             "type": "shell",
             "command": "cmake --build ${workspaceFolder}/build",
@@ -15,3 +16,15 @@
         }
     ]
 } 
+=======
+            "label": "cmakeBuild",
+            "type": "shell",
+            "command": "cmake --build ${workspaceFolder}/build --config Debug",
+            "presentation": {
+                // Reveal the output only if unrecognized errors occur.
+                "reveal": "silent"
+            }
+        }
+    ]
+}
+>>>>>>> 0b5a38f1c04303bc32dfd148ad73a37ec86405fd

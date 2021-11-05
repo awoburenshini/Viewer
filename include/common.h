@@ -28,9 +28,9 @@
 
 /* Application precision -- can be set to single or double precision */
 #if defined(SINGLE_PRECISION)
-typedef float Float;
+typedef float Real;
 #else
-typedef double Float;
+typedef double Real;
 #endif
 
 
@@ -42,19 +42,19 @@ typedef Eigen::Matrix<uint32_t, 2, 1> Vector2u;
 typedef Eigen::Matrix<uint32_t, 3, 1> Vector3u;
 typedef Eigen::Matrix<uint32_t, 4, 1> Vector4u;
 typedef Eigen::Matrix<uint8_t, 4, 1> Vector4u8;
-typedef Eigen::Matrix<Float, 2, 1> Vector2f;
-typedef Eigen::Matrix<Float, 3, 1> Vector3f;
-typedef Eigen::Matrix<Float, 4, 1> Vector4f;
+typedef Eigen::Matrix<Real, 2, 1> Vector2r;
+typedef Eigen::Matrix<Real, 3, 1> Vector3r;
+typedef Eigen::Matrix<Real, 4, 1> Vector4r;
 typedef Eigen::Matrix<int32_t, Eigen::Dynamic, 1> VectorXi;
 typedef Eigen::Matrix<uint32_t, Eigen::Dynamic, 1> VectorXu;
 typedef Eigen::Matrix<uint8_t, Eigen::Dynamic, 1> VectorXu8;
 typedef Eigen::Matrix<bool, Eigen::Dynamic, 1> VectorXb;
-typedef Eigen::Matrix<Float, Eigen::Dynamic, 1> VectorXf;
+typedef Eigen::Matrix<Real, Eigen::Dynamic, 1> VectorXr;
 typedef Eigen::Matrix<int32_t, Eigen::Dynamic, Eigen::Dynamic> MatrixXi;
 typedef Eigen::Matrix<uint32_t, Eigen::Dynamic, Eigen::Dynamic> MatrixXu;
 typedef Eigen::Matrix<uint8_t, Eigen::Dynamic, Eigen::Dynamic> MatrixXu8;
-typedef Eigen::Matrix<Float, Eigen::Dynamic, Eigen::Dynamic> MatrixXf;
-typedef Eigen::Matrix<Float, 2, 2> Matrix2f;
-typedef Eigen::Matrix<Float, 3, 3> Matrix3f;
-typedef Eigen::Matrix<Float, 4, 4> Matrix4f;
+typedef Eigen::Matrix<Real, Eigen::Dynamic, Eigen::Dynamic> MatrixXr;
+typedef Eigen::Matrix<Real, 2, 2> Matrix2r;
+typedef Eigen::Matrix<Real, 3, 3> Matrix3r;
+typedef Eigen::Matrix<Real, 4, 4> Matrix4r;
 
