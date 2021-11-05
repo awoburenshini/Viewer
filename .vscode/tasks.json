@@ -4,19 +4,6 @@
     "version": "2.0.0",
     "tasks": [
         {
-<<<<<<< HEAD
-            "label": "echo",
-            "type": "shell",
-            "command": "cmake --build ${workspaceFolder}/build",
-            "presentation": {
-                "reveal": "silent",
-                "revealProblems": "onProblem",
-                "close": true
-              }
-        }
-    ]
-} 
-=======
             "label": "cmakeBuild",
             "type": "shell",
             "command": "cmake --build ${workspaceFolder}/build --config Debug",
@@ -27,4 +14,3 @@
         }
     ]
 }
->>>>>>> 0b5a38f1c04303bc32dfd148ad73a37ec86405fd

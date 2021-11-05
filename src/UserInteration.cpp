@@ -8,7 +8,11 @@ UserInteraction::~UserInteraction() {
     //alert don't delete pointer camera_ptr,V_ptr,F_ptr
 }
 
-int UserInteraction::grabPoint(const Vector2r &p) const {
+void UserInteraction::grabPoint(const Vector2r &p) {
     // todo
-    return -1;
+    return;
+}
+
+void UserInteraction::movePoint(const Vector2r& p){
+
 }
