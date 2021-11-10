@@ -10,7 +10,13 @@ UserInteraction::~UserInteraction() {
 
 void UserInteraction::grabPoint(const Vector2r &p) {
     // todo
+    int num_vertex = V_ptr->cols();
+    float maxDis = -1.;
+    unsigned int ind = 0;
     return;
+    for(int i = 0; i < num_vertex; ++i){
+        
+    }
 }
 
 void UserInteraction::movePoint(const Vector2r& p){

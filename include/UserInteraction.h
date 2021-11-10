@@ -19,8 +19,8 @@ public:
 
 
 private:
-    int m_grabed;
-    Camera* camera_ptr;
-    MatrixXr* V_ptr;
-    MatrixXu* F_ptr;
+    int m_grabed = -1;
+    Camera* camera_ptr = NULL;
+    MatrixXr* V_ptr = NULL;
+    MatrixXu* F_ptr = NULL;
 };

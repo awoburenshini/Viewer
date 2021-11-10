@@ -21,7 +21,7 @@ GLFWwindow *initWindow() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_RESIZABLE,0);
+    glfwWindowHint(GLFW_RESIZABLE, 0);
 
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -97,20 +97,11 @@ int main() {
     GLData.setIndexData(F.data(), F.size());
 
     learnOpenGLProgram easyProgram;
-    makeProgram(
-        easyProgram,
-        "../shader/learnOpenGL.vs",
-        "../shader/learnOpenGL.fs");
+    makeProgram(easyProgram,"../shader/learnOpenGL.vs","../shader/learnOpenGL.fs");
     easyProgram.setProjective(cam.getProjectiveMatrix());
     easyProgram.setView(cam.getViewMatrix());
-    
-    while (!glfwWindowShouldClose(window)) {
-        processInput(window);
-        glClear(GL_COLOR_BUFFER_BIT);
-        glDisable(GL_DEPTH_TEST);
-        background.draw();
-        glClear(GL_DEPTH_BUFFER_BIT);
-        glEnable(GL_DEPTH_TEST);
+
+    auto render_mission = [&]() {
         {
             easyProgram.setOurColor({0.6314, 0.0706, 0.0706, 0.877});
             glUseProgram(easyProgram);
@@ -131,6 +122,17 @@ int main() {
             glBindVertexArray(0);
             glUseProgram(0);
         }
+    };
+
+    while (!glfwWindowShouldClose(window)) {
+        processInput(window);
+        glClear(GL_COLOR_BUFFER_BIT);
+        glDisable(GL_DEPTH_TEST);
+        background.draw();
+        glClear(GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
+
+        render_mission();
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
@@ -157,6 +159,6 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
 
 void mouse_callback(GLFWwindow *window, double xpos, double ypos) {
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-        std::cout << "hello"<< xpos<< " "<< ypos << std::endl;
+        std::cout << "hello" << xpos << " " << ypos << std::endl;
     }
 }
