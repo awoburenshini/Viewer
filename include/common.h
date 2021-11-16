@@ -57,4 +57,6 @@ typedef Eigen::Matrix<Real, Eigen::Dynamic, Eigen::Dynamic> MatrixXr;
 typedef Eigen::Matrix<Real, 2, 2> Matrix2r;
 typedef Eigen::Matrix<Real, 3, 3> Matrix3r;
 typedef Eigen::Matrix<Real, 4, 4> Matrix4r;
+typedef Eigen::Quaternion<Real> Quaternionr;
 
+const float PI = 3.14159265359;
