@@ -92,22 +92,18 @@ public:
         m_last = last;
     }
 
-
     // input NDC 
     void mouseRotate(const Vector2r &current)
     {
         Real xAngle = (m_last.x() - current.x()) * 2 * PI;
-        Real yAngle = (m_last.y() - current.y()) * PI;
-
-
+        Real yAngle = -(m_last.y() - current.y()) * PI;
         // maybe a bug! if yAngle is too large?
 
-
-        Matrix3r RMX = Eigen::AngleAxis(xAngle, m_up).matrix();
+        Matrix3r RMX = Eigen::AngleAxis<Real>(xAngle, m_up).matrix();
         m_center = RMX * (m_center - m_target) + m_target;
 
 
-        Matrix3r RMY = Eigen::AngleAxis(yAngle, m_right).matrix();
+        Matrix3r RMY = Eigen::AngleAxis<Real>(yAngle, m_right).matrix();
         m_center = RMY * (m_center - m_target) + m_target;
 
         setLookAt(m_center,m_target,m_up);

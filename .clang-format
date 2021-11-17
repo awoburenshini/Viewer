@@ -80,7 +80,7 @@ BraceWrapping:
   # else之前
   BeforeElse: true
   # 缩进大括号
-  IndentBraces: true
+  IndentBraces: false
   # 分离空函数
   SplitEmptyFunction: true
   # 分离空语句
