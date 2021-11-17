@@ -88,8 +88,8 @@ int main() {
 
     GLFWwindow *window = initWindow();
     GLBackground background(
-        "D:/Viewer/shader/background.vs",
-        "D:/Viewer/shader/background.fs");
+        "E:/Viewer/shader/background.vs",
+        "E:/Viewer/shader/background.fs"); 
     // build and compile our shader program
     // ------------------------------------
     // GLProgram easyProgram;
@@ -104,8 +104,8 @@ int main() {
     // cam.setOrtho(-0.1f, 0.1f, -0.1f, 0.1f, 0.1f, 100.0f);
     makeProgram(
         easyProgram,
-        "D:/Viewer/shader/learnOpenGL.vs",
-        "D:/Viewer/shader/learnOpenGL.fs");
+        "E:/Viewer/shader/learnOpenGL.vs",
+        "E:/Viewer/shader/learnOpenGL.fs");
 
     easyProgram.setOurColor({0.6314, 0.0706, 0.0706, 0.877});
 

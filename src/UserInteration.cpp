@@ -8,7 +8,17 @@ UserInteraction::~UserInteraction() {
     //alert don't delete pointer camera_ptr,V_ptr,F_ptr
 }
 
-int UserInteraction::grabPoint(const Vector2r &p) const {
+void UserInteraction::grabPoint(const Vector2r &p) {
     // todo
-    return -1;
+    int num_vertex = V_ptr->cols();
+    float maxDis = -1.;
+    unsigned int ind = 0;
+    return;
+    for(int i = 0; i < num_vertex; ++i){
+        
+    }
+}
+
+void UserInteraction::movePoint(const Vector2r& p){
+
 }

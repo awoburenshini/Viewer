@@ -105,10 +105,7 @@ int main()
     GLData.setIndexData(F.data(), F.size());
 
     learnOpenGLProgram easyProgram;
-    makeProgram(
-        easyProgram,
-        "../shader/learnOpenGL.vs",
-        "../shader/learnOpenGL.fs");
+    makeProgram(easyProgram,"../shader/learnOpenGL.vs","../shader/learnOpenGL.fs");
     easyProgram.setProjective(cam.getProjectiveMatrix());
     easyProgram.setView(cam.getViewMatrix());
 
@@ -143,9 +140,7 @@ int main()
             glBindVertexArray(0);
             glUseProgram(0);
         }
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
+    };
 
     glfwTerminate();
 
