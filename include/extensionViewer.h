@@ -111,6 +111,10 @@ public:
         m_last = current;
 
     }
+
+    void mouseMove(const Vector2r &current);
+
+    void mouseZoom(const Vector2r &current);
 };
 
 class learnOpenGLProgram : public GLProgram
