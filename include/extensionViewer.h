@@ -112,9 +112,18 @@ public:
 
     }
 
-    void mouseMove(const Vector2r &current);
+    void mouseMove(const Vector2r &current){
+        Vector2r offset = current - m_last;
+        Vector3r move = offset.x() * m_right + offset.y() * m_up;
+        m_center -= move;
+        m_target -= move;
+        setLookAt(m_center, m_target, m_up);
+    };
 
-    void mouseZoom(const Vector2r &current);
+    void mouseZoom(const Real &offset){
+        m_center -= m_front * offset;
+        setLookAt(m_center, m_target, m_up);
+    }
 };
 
 class learnOpenGLProgram : public GLProgram

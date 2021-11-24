@@ -4,6 +4,8 @@ set(CMAKE_GENERATOR_PLATFORM x64)
 # set(CMAKE_GENERATOR "Visual Studio 15 2017")
 # message("generator is set to ${CMAKE_GENERATOR}")
 project(Viewer)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # set our system with float
 add_definitions(-DSINGLE_PRECISION)
@@ -23,7 +25,7 @@ set(SRCS
     src/glad.c 
     src/Viewer.cpp
     src/MeshIO.cpp
-    test/test0.cpp 
+    test/test_viewer.cpp 
     # test/main.cpp
     )
 add_executable(Viewer ${INC} ${SRCS})
